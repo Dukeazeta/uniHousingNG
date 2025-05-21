@@ -76,42 +76,50 @@ class _HomeTabState extends State<HomeTab> with AutomaticKeepAliveClientMixin {
     {
       'id': '1',
       'title': 'Modern Family House',
-      'location': '6140 McKinney Drive',
-      'price': '₦28.6k',
+      'location': 'Near FUPRE Campus',
+      'price': '₦28.6k/month',
       'image': 'assets/images/house1.jpg',
       'beds': 4,
       'baths': 1,
       'isFavorite': false,
+      'color': Colors.blue[100]!,
+      'category': 'Apartments',
     },
     {
       'id': '2',
       'title': 'Contemporary House',
-      'location': '6140 McKinney Drive',
-      'price': '₦28.6k',
+      'location': 'Ugbomro, Effurun',
+      'price': '₦25.5k/month',
       'image': 'assets/images/house2.jpg',
-      'beds': 4,
+      'beds': 3,
       'baths': 1,
       'isFavorite': false,
+      'color': Colors.green[100]!,
+      'category': 'Bedsitters',
     },
     {
       'id': '3',
       'title': 'Luxury Apartment',
       'location': 'Near FUPRE Campus',
-      'price': '₦32.5k',
+      'price': '₦32.5k/month',
       'image': 'assets/images/house3.jpg',
       'beds': 3,
       'baths': 2,
       'isFavorite': false,
+      'color': Colors.purple[100]!,
+      'category': 'Apartments',
     },
     {
       'id': '4',
       'title': 'Student Hostel',
       'location': 'University Road',
-      'price': '₦18.9k',
+      'price': '₦18.9k/month',
       'image': 'assets/images/house4.jpg',
       'beds': 1,
       'baths': 1,
       'isFavorite': false,
+      'color': Colors.orange[100]!,
+      'category': 'Hostels',
     },
   ];
 
@@ -869,15 +877,55 @@ class _HomeTabState extends State<HomeTab> with AutomaticKeepAliveClientMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Section header
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: Row(
+            children: [
+              Container(
+                width: 4,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Recent Listings',
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const Spacer(),
+              TextButton(
+                onPressed: () {
+                  // Navigate to all listings
+                },
+                child: Text(
+                  'See All',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Listings grid
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            // Adjusted aspect ratio to provide more vertical space
-            childAspectRatio: 0.7,
+            childAspectRatio: 0.68, // Adjusted to provide more vertical space
             crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
+            mainAxisSpacing: 20,
           ),
           itemCount: _propertyListings.length,
           itemBuilder: (context, index) {
@@ -890,177 +938,231 @@ class _HomeTabState extends State<HomeTab> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _buildPropertyCard(Map<String, dynamic> property) {
+    // Default colors in case the property doesn't have a color defined
+    final Color propertyColor = property['color'] ?? Colors.blue[100]!;
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: propertyColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(13),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: propertyColor.withAlpha(128),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+            spreadRadius: 1,
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Property image with favorite button
-          Expanded(
-            flex: 3,
-            child: Stack(
+          // Property header with category badge
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Property image
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
+                // Category badge
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
                   ),
-                  child: Container(
-                    width: double.infinity,
-                    color: Colors.grey[200], // Placeholder color
-                    child: Center(
-                      child: Icon(
-                        Icons.home_rounded,
-                        size: 48,
-                        color: AppColors.primary,
-                      ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withAlpha(100),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.white.withAlpha(150),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    property['category'] ?? 'Property',
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
                   ),
                 ),
                 // Favorite button
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(25),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Icon(
-                        property['isFavorite']
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        size: 20,
-                        color:
-                            property['isFavorite']
-                                ? Colors.red
-                                : Colors.grey[600],
-                      ),
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withAlpha(77),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Icon(
+                      property['isFavorite']
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      size: 18,
+                      color: property['isFavorite'] ? Colors.red : Colors.white,
                     ),
                   ),
                 ),
               ],
             ),
           ),
+
+          // Property icon
+          Expanded(
+            flex: 1,
+            child: Center(
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white.withAlpha(51),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.home_rounded,
+                    size: 30,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
           // Property details
           Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
+            flex: 4,
+            child: Container(
+              padding: const EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(16),
+                  bottomRight: Radius.circular(16),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(5),
+                    blurRadius: 1,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Price
-                  Text(
-                    property['price'],
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
+                  // Title with price
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title
+                      Expanded(
+                        child: Text(
+                          property['title'],
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 2),
-                  // Location
-                  Text(
-                    property['location'],
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      color: AppColors.textSecondary,
+                  const SizedBox(height: 4),
+
+                  // Price
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    decoration: BoxDecoration(
+                      color: propertyColor.withAlpha(40),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      property['price'],
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 6),
+
+                  // Location
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        size: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          property['location'],
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            color: AppColors.textSecondary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+
                   // Beds and baths - using a more compact layout
-                  Flexible(
-                    child: Wrap(
-                      spacing: 6,
-                      runSpacing: 4,
-                      children: [
-                        // Beds
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 5,
-                            vertical: 3,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Beds
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.bed_outlined,
+                            size: 14,
+                            color: AppColors.textPrimary,
                           ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(4),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${property['beds']} Beds',
+                            style: GoogleFonts.inter(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textPrimary,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.bed_outlined,
-                                size: 12,
-                                color: Colors.grey[800],
-                              ),
-                              const SizedBox(width: 2),
-                              Text(
-                                '${property['beds']} Beds',
-                                style: GoogleFonts.inter(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey[800],
-                                ),
-                              ),
-                            ],
+                        ],
+                      ),
+                      // Baths
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.bathtub_outlined,
+                            size: 14,
+                            color: AppColors.textPrimary,
                           ),
-                        ),
-                        // Baths
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 5,
-                            vertical: 3,
+                          const SizedBox(width: 4),
+                          Text(
+                            '${property['baths']} Bath',
+                            style: GoogleFonts.inter(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textPrimary,
+                            ),
                           ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.bathtub_outlined,
-                                size: 12,
-                                color: Colors.grey[800],
-                              ),
-                              const SizedBox(width: 2),
-                              Text(
-                                '${property['baths']} Bath',
-                                style: GoogleFonts.inter(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey[800],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),
