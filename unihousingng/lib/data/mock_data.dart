@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../core/constants.dart';
 import 'models/property_model.dart';
 import 'models/category_model.dart';
 import 'models/property_image_model.dart';
+import 'models/map_location_model.dart';
 
 class MockData {
   // Sample property images generator
@@ -94,6 +96,18 @@ class MockData {
       area: 45.0,
       images: _generateSampleImages('1'),
       virtualTourUrl: 'https://example.com/virtual-tour/1',
+      mapLocation: MapLocationModel(
+        id: 'loc_1',
+        address: 'Akoka Road, Yaba, Lagos',
+        streetAddress: '15 Akoka Road',
+        city: 'Lagos',
+        state: 'Lagos',
+        coordinates: const LatLng(6.5244, 3.3792), // Near UNILAG
+        landmark: 'Near University of Lagos Main Gate',
+        distanceToNearestCampus: 0.8,
+        nearestCampusId: 'unilag',
+        type: LocationType.property,
+      ),
     ),
     PropertyModel(
       id: '2',
@@ -109,6 +123,18 @@ class MockData {
       amenities: ['WiFi', 'Kitchen', 'Security', 'Water'],
       area: 75.0,
       images: _generateSampleImages('2'),
+      mapLocation: MapLocationModel(
+        id: 'loc_2',
+        address: 'Canaan Land, Ota, Ogun State',
+        streetAddress: 'KM 10 Idiroko Road',
+        city: 'Ota',
+        state: 'Ogun',
+        coordinates: const LatLng(6.6018, 3.1582), // Near Covenant University
+        landmark: 'Close to Covenant University',
+        distanceToNearestCampus: 1.2,
+        nearestCampusId: 'covenant',
+        type: LocationType.property,
+      ),
     ),
     PropertyModel(
       id: '3',
@@ -124,6 +150,18 @@ class MockData {
       amenities: ['WiFi', 'Laundry', 'Security', 'Gym'],
       area: 35.0,
       images: _generateSampleImages('3'),
+      mapLocation: MapLocationModel(
+        id: 'loc_3',
+        address: 'University Road, Ibadan, Oyo State',
+        streetAddress: 'UI-Ojoo Road',
+        city: 'Ibadan',
+        state: 'Oyo',
+        coordinates: const LatLng(7.4398, 3.9093), // Near UI
+        landmark: 'University of Ibadan Area',
+        distanceToNearestCampus: 0.5,
+        nearestCampusId: 'ui',
+        type: LocationType.property,
+      ),
     ),
   ];
 
@@ -157,6 +195,18 @@ class MockData {
       amenities: ['WiFi', 'Parking', 'Security', 'Kitchen'],
       area: 120.0,
       images: _generateSampleImages('4'),
+      mapLocation: MapLocationModel(
+        id: 'loc_4',
+        address: 'Effurun, Delta State',
+        streetAddress: 'Petroleum Training Institute Road',
+        city: 'Effurun',
+        state: 'Delta',
+        coordinates: const LatLng(5.5729, 5.7561), // Near FUPRE
+        landmark: 'Near FUPRE Campus',
+        distanceToNearestCampus: 1.5,
+        nearestCampusId: 'fupre',
+        type: LocationType.property,
+      ),
     ),
     PropertyModel(
       id: '2',
@@ -172,6 +222,18 @@ class MockData {
       description: 'Contemporary design with excellent location.',
       amenities: ['WiFi', 'Security', 'Water', 'Power'],
       area: 85.0,
+      mapLocation: MapLocationModel(
+        id: 'loc_5',
+        address: 'Ugbomro, Effurun, Delta State',
+        streetAddress: 'Ugbomro Junction',
+        city: 'Effurun',
+        state: 'Delta',
+        coordinates: const LatLng(5.5429, 5.7361), // Ugbomro area
+        landmark: 'Ugbomro, Effurun',
+        distanceToNearestCampus: 2.8,
+        nearestCampusId: 'fupre',
+        type: LocationType.property,
+      ),
     ),
     PropertyModel(
       id: '3',
@@ -187,6 +249,18 @@ class MockData {
       description: 'Luxury apartment with premium finishes.',
       amenities: ['WiFi', 'AC', 'Parking', 'Security', 'Kitchen'],
       area: 95.0,
+      mapLocation: MapLocationModel(
+        id: 'loc_6',
+        address: 'FUPRE Campus Road, Effurun, Delta State',
+        streetAddress: 'University Road',
+        city: 'Effurun',
+        state: 'Delta',
+        coordinates: const LatLng(5.5629, 5.7661), // Very close to FUPRE
+        landmark: 'Near FUPRE Campus',
+        distanceToNearestCampus: 0.3,
+        nearestCampusId: 'fupre',
+        type: LocationType.property,
+      ),
     ),
     PropertyModel(
       id: '4',
@@ -202,6 +276,18 @@ class MockData {
       description: 'Affordable hostel accommodation for students.',
       amenities: ['WiFi', 'Security', 'Laundry'],
       area: 25.0,
+      mapLocation: MapLocationModel(
+        id: 'loc_7',
+        address: 'University Road, Effurun, Delta State',
+        streetAddress: 'Student Village Road',
+        city: 'Effurun',
+        state: 'Delta',
+        coordinates: const LatLng(5.5529, 5.7461), // University Road area
+        landmark: 'University Road',
+        distanceToNearestCampus: 1.8,
+        nearestCampusId: 'fupre',
+        type: LocationType.property,
+      ),
     ),
   ];
 }

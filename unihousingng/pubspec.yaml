@@ -52,6 +52,8 @@ dependencies:
   carousel_slider: 4.0.0
   # Alternative carousel widget in case of conflicts
   flutter_carousel_widget: ^2.2.0
+  # Google Maps for interactive map functionality
+  google_maps_flutter: ^2.12.2
 
 dev_dependencies:
   flutter_test:

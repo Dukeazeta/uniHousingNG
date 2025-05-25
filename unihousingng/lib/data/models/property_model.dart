@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'property_image_model.dart';
+import 'map_location_model.dart';
 
 class PropertyModel {
   final String id;
@@ -18,6 +19,7 @@ class PropertyModel {
   final double? area;
   final List<PropertyImageModel> images;
   final String? virtualTourUrl;
+  final MapLocationModel? mapLocation;
 
   const PropertyModel({
     required this.id,
@@ -36,6 +38,7 @@ class PropertyModel {
     this.area,
     this.images = const [],
     this.virtualTourUrl,
+    this.mapLocation,
   });
 
   PropertyModel copyWith({
@@ -55,6 +58,7 @@ class PropertyModel {
     double? area,
     List<PropertyImageModel>? images,
     String? virtualTourUrl,
+    MapLocationModel? mapLocation,
   }) {
     return PropertyModel(
       id: id ?? this.id,
@@ -73,6 +77,7 @@ class PropertyModel {
       area: area ?? this.area,
       images: images ?? this.images,
       virtualTourUrl: virtualTourUrl ?? this.virtualTourUrl,
+      mapLocation: mapLocation ?? this.mapLocation,
     );
   }
 
@@ -94,6 +99,7 @@ class PropertyModel {
       'area': area,
       'images': images.map((img) => img.toMap()).toList(),
       'virtualTourUrl': virtualTourUrl,
+      'mapLocation': mapLocation?.toMap(),
     };
   }
 
@@ -116,6 +122,7 @@ class PropertyModel {
       'area': area,
       'images': images.map((img) => img.toMap()).toList(),
       'virtualTourUrl': virtualTourUrl,
+      'mapLocation': mapLocation?.toMap(),
     };
   }
 
@@ -154,6 +161,10 @@ class PropertyModel {
                   .toList()
               : [],
       virtualTourUrl: map['virtualTourUrl'],
+      mapLocation:
+          map['mapLocation'] != null
+              ? MapLocationModel.fromMap(map['mapLocation'])
+              : null,
     );
   }
 
