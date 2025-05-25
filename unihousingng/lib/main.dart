@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'core/constants.dart';
 import 'core/theme.dart';
 import 'core/services/navigation_service.dart';
 import 'core/services/auth_service.dart';
 import 'presentation/screens/splash/splash_screen.dart';
-import 'presentation/screens/auth/login_screen_refactored.dart';
-import 'presentation/screens/auth/register_screen_refactored.dart';
+import 'presentation/screens/auth/login_screen.dart';
+import 'presentation/screens/auth/register_screen.dart';
 import 'presentation/screens/main/main_screen.dart';
 import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/map/map_screen.dart';
@@ -34,7 +36,9 @@ void main() {
   AuthService(); // Initialize auth service singleton
   NavigationService(); // Initialize navigation service singleton
 
-  runApp(const MyApp());
+  runApp(
+    DevicePreview(enabled: !kReleaseMode, builder: (context) => const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -48,10 +52,12 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       navigatorKey: NavigationService().navigatorKey,
       initialRoute: AppRoutes.splash,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
       routes: {
         AppRoutes.splash: (context) => const SplashScreen(),
-        AppRoutes.login: (context) => const LoginScreenRefactored(),
-        AppRoutes.register: (context) => const RegisterScreenRefactored(),
+        AppRoutes.login: (context) => const LoginScreen(),
+        AppRoutes.register: (context) => const RegisterScreen(),
         AppRoutes.main: (context) => const MainScreen(),
         // Individual screens - typically accessed through the main screen
         AppRoutes.home: (context) => const HomeTab(),
@@ -60,7 +66,6 @@ class MyApp extends StatelessWidget {
         AppRoutes.profile: (context) => const ProfileScreen(),
         // TODO: Add more routes as screens are created
         // AppRoutes.onboarding: (context) => const OnboardingScreen(),
-        // AppRoutes.propertyDetails: (context) => const PropertyDetailsScreen(),
       },
     );
   }

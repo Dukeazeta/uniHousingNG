@@ -93,6 +93,31 @@ class AppAssets {
   static const String houseSvg = "assets/images/svgs/house.svg";
   static const String sharedSvg = "assets/images/svgs/shared.svg";
 
+  // Property detail icons
+  static const String bedSvg = "assets/images/svgs/bed.svg";
+  static const String bathSvg = "assets/images/svgs/bath.svg";
+  static const String areaSvg = "assets/images/svgs/area.svg";
+  static const String wifiSvg = "assets/images/svgs/wifi.svg";
+  static const String parkingSvg = "assets/images/svgs/parking.svg";
+  static const String securitySvg = "assets/images/svgs/security.svg";
+  static const String powerSvg = "assets/images/svgs/power.svg";
+  static const String waterSvg = "assets/images/svgs/water.svg";
+  static const String airConditioningSvg =
+      "assets/images/svgs/air_conditioning.svg";
+  static const String kitchenSvg = "assets/images/svgs/kitchen.svg";
+  static const String laundrySvg = "assets/images/svgs/laundry.svg";
+  static const String balconySvg = "assets/images/svgs/balcony.svg";
+  static const String furnishedSvg = "assets/images/svgs/furnished.svg";
+  static const String petFriendlySvg = "assets/images/svgs/pet_friendly.svg";
+  static const String gymSvg = "assets/images/svgs/gym.svg";
+  static const String poolSvg = "assets/images/svgs/pool.svg";
+  static const String locationSvg = "assets/images/svgs/location.svg";
+  static const String messageSvg = "assets/images/svgs/message.svg";
+  static const String shareSvg = "assets/images/svgs/share.svg";
+  static const String favoriteSvg = "assets/images/svgs/favorite.svg";
+  static const String backArrowSvg = "assets/images/svgs/back_arrow.svg";
+  static const String starSvg = "assets/images/svgs/star.svg";
+
   // Images
   static const String loginBackground = "assets/images/loginBackground.png";
 }

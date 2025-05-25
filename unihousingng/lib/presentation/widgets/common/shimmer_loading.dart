@@ -36,7 +36,7 @@ class ShimmerLoading extends StatelessWidget {
           width: width,
           height: height,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.5),
+            color: Colors.white.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(borderRadius),
           ),
         ),
@@ -48,10 +48,7 @@ class ShimmerLoading extends StatelessWidget {
 class ShimmerEffect extends StatefulWidget {
   final Widget child;
 
-  const ShimmerEffect({
-    super.key,
-    required this.child,
-  });
+  const ShimmerEffect({super.key, required this.child});
 
   @override
   State<ShimmerEffect> createState() => _ShimmerEffectState();

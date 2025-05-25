@@ -39,7 +39,7 @@ dependencies:
   google_fonts: ^6.1.0
 
   # Device Preview for testing on different screen sizes
-  device_preview: ^1.1.0
+  device_preview: ^1.2.0
 
   # Font Awesome Icons
   font_awesome_flutter: ^10.7.0
