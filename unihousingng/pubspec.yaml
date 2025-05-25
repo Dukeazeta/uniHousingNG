@@ -38,15 +38,15 @@ dependencies:
   # Google Fonts package for modern typography
   google_fonts: ^6.1.0
 
-  # Device Preview for testing on different screen sizes
-  device_preview: ^1.2.0
-
   # Font Awesome Icons
   font_awesome_flutter: ^10.7.0
 
   # SVG rendering
   flutter_svg: ^2.0.10+1
   shared_preferences: ^2.5.3
+
+  # Environment variables
+  flutter_dotenv: ^5.1.0
 
   # Carousel slider for banner
   carousel_slider: 4.0.0
@@ -81,6 +81,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/svgs/
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

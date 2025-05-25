@@ -6,6 +6,7 @@ import '../../../core/constants.dart';
 import '../../../data/models/property_model.dart';
 import '../../../data/models/campus_model.dart';
 import '../../../data/models/map_location_model.dart';
+import 'map_error_widget.dart';
 
 class PropertyMapWidget extends StatefulWidget {
   final List<PropertyModel> properties;
@@ -40,6 +41,8 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
   Set<Marker> _markers = {};
   Set<Circle> _circles = {};
   bool _isLoading = true;
+  bool _hasError = false;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -283,6 +286,22 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
       );
     }
 
+    if (_hasError) {
+      return SizedBox(
+        height: widget.height,
+        child: MapErrorWidget(
+          errorMessage: _errorMessage,
+          onRetry: () {
+            setState(() {
+              _hasError = false;
+              _isLoading = true;
+            });
+            _initializeMap();
+          },
+        ),
+      );
+    }
+
     return Container(
       height: widget.height,
       decoration: BoxDecoration(
@@ -297,30 +316,54 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: GoogleMap(
-          onMapCreated: (GoogleMapController controller) {
-            _mapController = controller;
-          },
-          initialCameraPosition: CameraPosition(
-            target: _initialCenter,
-            zoom: widget.initialZoom,
-          ),
-          markers: _markers,
-          circles: _circles,
-          onTap: widget.onMapTap,
-          zoomControlsEnabled: widget.showControls,
-          mapToolbarEnabled: widget.showControls,
-          myLocationButtonEnabled: widget.showControls,
-          myLocationEnabled: true,
-          mapType: MapType.normal,
-          compassEnabled: true,
-          rotateGesturesEnabled: true,
-          scrollGesturesEnabled: true,
-          tiltGesturesEnabled: true,
-          zoomGesturesEnabled: true,
-        ),
+        child: _buildGoogleMap(),
       ),
     );
+  }
+
+  Widget _buildGoogleMap() {
+    try {
+      return GoogleMap(
+        onMapCreated: (GoogleMapController controller) {
+          try {
+            _mapController = controller;
+          } catch (e) {
+            setState(() {
+              _hasError = true;
+              _errorMessage = 'Failed to initialize map: ${e.toString()}';
+              _isLoading = false;
+            });
+          }
+        },
+        initialCameraPosition: CameraPosition(
+          target: _initialCenter,
+          zoom: widget.initialZoom,
+        ),
+        markers: _markers,
+        circles: _circles,
+        onTap: widget.onMapTap,
+        zoomControlsEnabled: widget.showControls,
+        mapToolbarEnabled: widget.showControls,
+        myLocationButtonEnabled: widget.showControls,
+        myLocationEnabled: true,
+        mapType: MapType.normal,
+        compassEnabled: true,
+        rotateGesturesEnabled: true,
+        scrollGesturesEnabled: true,
+        tiltGesturesEnabled: true,
+        zoomGesturesEnabled: true,
+      );
+    } catch (e) {
+      // If GoogleMap widget creation fails, show error immediately
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _hasError = true;
+          _errorMessage = 'Google Maps failed to load: ${e.toString()}';
+          _isLoading = false;
+        });
+      });
+      return const SizedBox.shrink();
+    }
   }
 
   @override
