@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'property_image_model.dart';
 
 class PropertyModel {
   final String id;
@@ -15,6 +16,8 @@ class PropertyModel {
   final String? description;
   final List<String>? amenities;
   final double? area;
+  final List<PropertyImageModel> images;
+  final String? virtualTourUrl;
 
   const PropertyModel({
     required this.id,
@@ -31,6 +34,8 @@ class PropertyModel {
     this.description,
     this.amenities,
     this.area,
+    this.images = const [],
+    this.virtualTourUrl,
   });
 
   PropertyModel copyWith({
@@ -48,6 +53,8 @@ class PropertyModel {
     String? description,
     List<String>? amenities,
     double? area,
+    List<PropertyImageModel>? images,
+    String? virtualTourUrl,
   }) {
     return PropertyModel(
       id: id ?? this.id,
@@ -64,6 +71,8 @@ class PropertyModel {
       description: description ?? this.description,
       amenities: amenities ?? this.amenities,
       area: area ?? this.area,
+      images: images ?? this.images,
+      virtualTourUrl: virtualTourUrl ?? this.virtualTourUrl,
     );
   }
 
@@ -77,16 +86,51 @@ class PropertyModel {
       'beds': beds,
       'baths': baths,
       'isFavorite': isFavorite,
-      'color': color.toARGB32(),
+      'color': color, // Keep as Color object for UI compatibility
       'category': category,
       'rating': rating,
       'description': description,
       'amenities': amenities,
       'area': area,
+      'images': images.map((img) => img.toMap()).toList(),
+      'virtualTourUrl': virtualTourUrl,
+    };
+  }
+
+  // For serialization to storage/network
+  Map<String, dynamic> toSerializableMap() {
+    return {
+      'id': id,
+      'title': title,
+      'location': location,
+      'price': price,
+      'image': image,
+      'beds': beds,
+      'baths': baths,
+      'isFavorite': isFavorite,
+      'color': color.toARGB32(), // Convert to int for serialization
+      'category': category,
+      'rating': rating,
+      'description': description,
+      'amenities': amenities,
+      'area': area,
+      'images': images.map((img) => img.toMap()).toList(),
+      'virtualTourUrl': virtualTourUrl,
     };
   }
 
   factory PropertyModel.fromMap(Map<String, dynamic> map) {
+    // Handle color conversion properly
+    Color propertyColor;
+    final colorValue = map['color'];
+    if (colorValue is Color) {
+      propertyColor = colorValue;
+    } else if (colorValue is int) {
+      propertyColor = Color(colorValue);
+    } else {
+      propertyColor = const Color(0xFF2196F3);
+    }
+
     return PropertyModel(
       id: map['id'] ?? '',
       title: map['title'] ?? '',
@@ -96,13 +140,57 @@ class PropertyModel {
       beds: map['beds']?.toInt() ?? 0,
       baths: map['baths']?.toInt() ?? 0,
       isFavorite: map['isFavorite'] ?? false,
-      color: Color(map['color'] ?? 0xFF2196F3),
+      color: propertyColor,
       category: map['category'] ?? '',
       rating: map['rating']?.toDouble(),
       description: map['description'],
       amenities:
           map['amenities'] != null ? List<String>.from(map['amenities']) : null,
       area: map['area']?.toDouble(),
+      images:
+          map['images'] != null
+              ? (map['images'] as List)
+                  .map((img) => PropertyImageModel.fromMap(img))
+                  .toList()
+              : [],
+      virtualTourUrl: map['virtualTourUrl'],
     );
   }
+
+  // Helper methods for images
+  PropertyImageModel? get primaryImage {
+    try {
+      return images.firstWhere((img) => img.isPrimary);
+    } catch (e) {
+      return images.isNotEmpty ? images.first : null;
+    }
+  }
+
+  List<PropertyImageModel> get exteriorImages {
+    return images.where((img) => img.isExterior).toList();
+  }
+
+  List<PropertyImageModel> get interiorImages {
+    return images.where((img) => img.isInterior).toList();
+  }
+
+  List<PropertyImageModel> get bedroomImages {
+    return images.where((img) => img.isBedroom).toList();
+  }
+
+  List<PropertyImageModel> get bathroomImages {
+    return images.where((img) => img.isBathroom).toList();
+  }
+
+  List<PropertyImageModel> get kitchenImages {
+    return images.where((img) => img.isKitchen).toList();
+  }
+
+  List<PropertyImageModel> getImagesByType(String type) {
+    return images.where((img) => img.type == type).toList();
+  }
+
+  bool get hasImages => images.isNotEmpty;
+  bool get hasVirtualTour =>
+      virtualTourUrl != null && virtualTourUrl!.isNotEmpty;
 }

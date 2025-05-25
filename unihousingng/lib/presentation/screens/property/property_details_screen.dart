@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants.dart';
+import '../../../data/models/property_model.dart';
 import '../../widgets/property/property_header.dart';
 import '../../widgets/property/property_stats_row.dart';
 import '../../widgets/property/property_description_section.dart';
 import '../../widgets/property/property_amenities_section.dart';
 import '../../widgets/property/property_location_section.dart';
 import '../../widgets/property/property_contact_buttons.dart';
+import '../../widgets/property/property_image_gallery.dart';
 
 class PropertyDetailsScreen extends StatefulWidget {
-  final Map<String, dynamic> property;
+  final PropertyModel property;
 
-  const PropertyDetailsScreen({
-    super.key,
-    required this.property,
-  });
+  const PropertyDetailsScreen({super.key, required this.property});
 
   @override
   State<PropertyDetailsScreen> createState() => _PropertyDetailsScreenState();
@@ -23,10 +23,14 @@ class PropertyDetailsScreen extends StatefulWidget {
 class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
   bool _isFavorite = false;
 
+  Color _getPropertyColor() {
+    return widget.property.color;
+  }
+
   @override
   void initState() {
     super.initState();
-    _isFavorite = widget.property['isFavorite'] ?? false;
+    _isFavorite = widget.property.isFavorite;
   }
 
   void _toggleFavorite() {
@@ -67,10 +71,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
-        slivers: [
-          _buildSliverAppBar(),
-          _buildPropertyContent(),
-        ],
+        slivers: [_buildSliverAppBar(), _buildPropertyContent()],
       ),
       floatingActionButton: PropertyContactButtons(
         onContactLandlord: _contactLandlord,
@@ -107,10 +108,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
         ),
       ),
       actions: [
-        _buildActionButton(
-          icon: AppAssets.shareSvg,
-          onTap: _shareProperty,
-        ),
+        _buildActionButton(icon: AppAssets.shareSvg, onTap: _shareProperty),
         _buildActionButton(
           icon: AppAssets.favoriteSvg,
           onTap: _toggleFavorite,
@@ -123,10 +121,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                widget.property['color'] ?? AppColors.primary,
-                (widget.property['color'] ?? AppColors.primary).withAlpha(200),
-              ],
+              colors: [_getPropertyColor(), _getPropertyColor().withAlpha(200)],
             ),
           ),
           child: Center(
@@ -172,22 +167,76 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PropertyHeader(property: widget.property),
+            // Image Gallery
+            if (widget.property.hasImages) ...[
+              PropertyImageGallery(
+                images: widget.property.images,
+                height: 250,
+                showIndicators: true,
+                showImageCount: true,
+                enableFullScreen: true,
+              ),
+              const SizedBox(height: 24),
+            ],
+
+            PropertyHeader(property: widget.property.toMap()),
             const SizedBox(height: 24),
-            PropertyStatsRow(property: widget.property),
+            PropertyStatsRow(property: widget.property.toMap()),
             const SizedBox(height: 24),
             PropertyDescriptionSection(
-              description: widget.property['description'],
+              description: widget.property.description,
             ),
             const SizedBox(height: 24),
             const PropertyAmenitiesSection(),
             const SizedBox(height: 24),
-            PropertyLocationSection(
-              location: widget.property['location'],
-            ),
+            PropertyLocationSection(location: widget.property.location),
+
+            // Virtual Tour Button
+            if (widget.property.hasVirtualTour) ...[
+              const SizedBox(height: 24),
+              _buildVirtualTourButton(widget.property.virtualTourUrl!),
+            ],
+
             const SizedBox(height: 100), // Space for floating button
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildVirtualTourButton(String virtualTourUrl) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.primary, AppColors.secondary],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withAlpha(60),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.view_in_ar_rounded, color: Colors.white, size: 24),
+          const SizedBox(width: 12),
+          Text(
+            'Take Virtual Tour',
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }

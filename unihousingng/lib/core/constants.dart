@@ -117,6 +117,8 @@ class AppAssets {
   static const String favoriteSvg = "assets/images/svgs/favorite.svg";
   static const String backArrowSvg = "assets/images/svgs/back_arrow.svg";
   static const String starSvg = "assets/images/svgs/star.svg";
+  static const String searchSvg = "assets/images/svgs/search.svg";
+  static const String filterSvg = "assets/images/svgs/filter.svg";
 
   // Images
   static const String loginBackground = "assets/images/loginBackground.png";
@@ -134,4 +136,5 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String profile = '/profile';
   static const String propertyDetails = '/property-details';
+  static const String search = '/search';
 }

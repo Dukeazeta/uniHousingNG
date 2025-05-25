@@ -2,8 +2,66 @@ import 'package:flutter/material.dart';
 import '../core/constants.dart';
 import 'models/property_model.dart';
 import 'models/category_model.dart';
+import 'models/property_image_model.dart';
 
 class MockData {
+  // Sample property images generator
+  static List<PropertyImageModel> _generateSampleImages(String propertyId) {
+    return [
+      PropertyImageModel(
+        id: '${propertyId}_img_1',
+        url: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800',
+        thumbnailUrl:
+            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=300',
+        caption: 'Beautiful exterior view',
+        type: 'exterior',
+        isPrimary: true,
+        order: 1,
+      ),
+      PropertyImageModel(
+        id: '${propertyId}_img_2',
+        url:
+            'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800',
+        thumbnailUrl:
+            'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300',
+        caption: 'Spacious living room',
+        type: 'living_room',
+        isPrimary: false,
+        order: 2,
+      ),
+      PropertyImageModel(
+        id: '${propertyId}_img_3',
+        url: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800',
+        thumbnailUrl:
+            'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300',
+        caption: 'Comfortable bedroom',
+        type: 'bedroom',
+        isPrimary: false,
+        order: 3,
+      ),
+      PropertyImageModel(
+        id: '${propertyId}_img_4',
+        url: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800',
+        thumbnailUrl:
+            'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300',
+        caption: 'Modern kitchen',
+        type: 'kitchen',
+        isPrimary: false,
+        order: 4,
+      ),
+      PropertyImageModel(
+        id: '${propertyId}_img_5',
+        url: 'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800',
+        thumbnailUrl:
+            'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=300',
+        caption: 'Clean bathroom',
+        type: 'bathroom',
+        isPrimary: false,
+        order: 5,
+      ),
+    ];
+  }
+
   // List of Nigerian campuses
   static const List<String> nigerianCampuses = [
     'FUPRE, Delta',
@@ -30,9 +88,12 @@ class MockData {
       beds: 1,
       baths: 1,
       category: 'Apartments',
-      description: 'A beautiful modern studio apartment with excellent amenities.',
+      description:
+          'A beautiful modern studio apartment with excellent amenities.',
       amenities: ['WiFi', 'Parking', 'Security', 'Power'],
       area: 45.0,
+      images: _generateSampleImages('1'),
+      virtualTourUrl: 'https://example.com/virtual-tour/1',
     ),
     PropertyModel(
       id: '2',
@@ -47,6 +108,7 @@ class MockData {
       description: 'Spacious 2-bedroom flat perfect for students.',
       amenities: ['WiFi', 'Kitchen', 'Security', 'Water'],
       area: 75.0,
+      images: _generateSampleImages('2'),
     ),
     PropertyModel(
       id: '3',
@@ -61,6 +123,7 @@ class MockData {
       description: 'Premium hostel accommodation with modern facilities.',
       amenities: ['WiFi', 'Laundry', 'Security', 'Gym'],
       area: 35.0,
+      images: _generateSampleImages('3'),
     ),
   ];
 
@@ -69,14 +132,18 @@ class MockData {
     CategoryModel(name: 'Bedsitters', icon: AppAssets.houseSvg, count: 95),
     CategoryModel(name: 'Apartments', icon: AppAssets.apartmentSvg, count: 120),
     CategoryModel(name: 'Hostels', icon: AppAssets.hostelSvg, count: 85),
-    CategoryModel(name: 'Selfcontains', icon: AppAssets.apartmentSvg, count: 68),
+    CategoryModel(
+      name: 'Selfcontains',
+      icon: AppAssets.apartmentSvg,
+      count: 68,
+    ),
     CategoryModel(name: 'Shared', icon: AppAssets.sharedSvg, count: 42),
   ];
 
   // Mock data for property listings
   static final List<PropertyModel> propertyListings = [
     PropertyModel(
-      id: '1',
+      id: '4',
       title: 'Modern Family House',
       location: 'Near FUPRE Campus',
       price: '₦28.6k/month',
@@ -89,6 +156,7 @@ class MockData {
       description: 'Spacious family house with modern amenities.',
       amenities: ['WiFi', 'Parking', 'Security', 'Kitchen'],
       area: 120.0,
+      images: _generateSampleImages('4'),
     ),
     PropertyModel(
       id: '2',

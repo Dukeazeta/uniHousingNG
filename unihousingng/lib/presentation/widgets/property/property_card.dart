@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants.dart';
 import '../../../data/models/property_model.dart';
+import 'property_image_gallery.dart';
 
 class PropertyCard extends StatelessWidget {
   final PropertyModel property;
   final VoidCallback onTap;
 
-  const PropertyCard({
-    super.key,
-    required this.property,
-    required this.onTap,
-  });
+  const PropertyCard({super.key, required this.property, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -84,25 +81,37 @@ class PropertyCard extends StatelessWidget {
               ),
             ),
 
-            // Property icon
+            // Property image gallery or icon
             Expanded(
               flex: 1,
-              child: Center(
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(51),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.home_rounded,
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child:
+                    property.hasImages
+                        ? PropertyImageGallery(
+                          images: property.images,
+                          height: 80,
+                          showIndicators: false,
+                          showImageCount: false,
+                          enableFullScreen: false,
+                        )
+                        : Center(
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withAlpha(51),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.home_rounded,
+                                size: 30,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
               ),
             ),
 

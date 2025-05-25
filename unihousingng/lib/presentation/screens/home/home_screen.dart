@@ -10,7 +10,9 @@ import '../../widgets/home/featured_properties_carousel.dart';
 import '../../widgets/home/home_tab_selector.dart';
 import '../../widgets/home/property_listings_grid.dart';
 import '../../widgets/home/categories_grid.dart';
+import '../../widgets/search/enhanced_search_bar.dart';
 import '../property/property_details_screen.dart';
+import '../search/search_results_screen.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -47,20 +49,34 @@ class _HomeTabState extends State<HomeTab> with AutomaticKeepAliveClientMixin {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PropertyDetailsScreen(
-          property: property.toMap(),
-        ),
+        builder: (context) => PropertyDetailsScreen(property: property),
       ),
     );
   }
 
   void _onCategoryTap(CategoryModel category) {
-    // Navigate to category listings
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${category.name} category selected'),
-        backgroundColor: AppColors.primary,
+    // Navigate to search results with category filter
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchResultsScreen(initialQuery: category.name),
       ),
+    );
+  }
+
+  void _onSearchTap(String query) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchResultsScreen(initialQuery: query),
+      ),
+    );
+  }
+
+  void _onFilterTap() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SearchResultsScreen()),
     );
   }
 
@@ -116,6 +132,15 @@ class _HomeTabState extends State<HomeTab> with AutomaticKeepAliveClientMixin {
             ),
             const SizedBox(height: 24),
 
+            // Enhanced search bar
+            EnhancedSearchBar(
+              onSearch: _onSearchTap,
+              onFilterTap: _onFilterTap,
+              hintText:
+                  'Search properties near ${_selectedCampus.split(',')[0]}...',
+            ),
+            const SizedBox(height: 24),
+
             // Featured properties carousel
             FeaturedPropertiesCarousel(
               properties: MockData.featuredProperties,
@@ -140,9 +165,10 @@ class _HomeTabState extends State<HomeTab> with AutomaticKeepAliveClientMixin {
                 categories: MockData.categories,
                 onCategoryTap: _onCategoryTap,
               ),
-              crossFadeState: _selectedTabIndex == 0
-                  ? CrossFadeState.showFirst
-                  : CrossFadeState.showSecond,
+              crossFadeState:
+                  _selectedTabIndex == 0
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
               duration: const Duration(milliseconds: 400),
               firstCurve: Curves.easeOutQuint,
               secondCurve: Curves.easeOutQuint,

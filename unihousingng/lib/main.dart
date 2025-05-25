@@ -14,6 +14,7 @@ import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/map/map_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
 import 'presentation/screens/profile/profile_screen.dart';
+import 'presentation/screens/search/search_results_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.map: (context) => const MapScreen(),
         AppRoutes.settings: (context) => const SettingsScreen(),
         AppRoutes.profile: (context) => const ProfileScreen(),
+        AppRoutes.search: (context) => const SearchResultsScreen(),
         // TODO: Add more routes as screens are created
         // AppRoutes.onboarding: (context) => const OnboardingScreen(),
       },
