@@ -5,8 +5,69 @@ import 'models/property_model.dart';
 import 'models/category_model.dart';
 import 'models/property_image_model.dart';
 import 'models/map_location_model.dart';
+import 'models/landlord_model.dart';
 
 class MockData {
+  // Sample landlords
+  static final List<LandlordModel> sampleLandlords = [
+    LandlordModel(
+      id: 'landlord_1',
+      name: 'Mr. Adebayo Johnson',
+      email: 'adebayo.johnson@email.com',
+      phone: '08012345678',
+      whatsappNumber: '08012345678',
+      profileImageUrl:
+          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+      rating: 4.8,
+      totalProperties: 12,
+      totalReviews: 45,
+      isVerified: true,
+      bio:
+          'Experienced property manager with over 10 years in student accommodation.',
+      languages: ['English', 'Yoruba'],
+      preferredContactMethod: 'whatsapp',
+      businessHours: '8:00 AM - 6:00 PM',
+      joinedDate: DateTime(2020, 3, 15),
+    ),
+    LandlordModel(
+      id: 'landlord_2',
+      name: 'Mrs. Chioma Okafor',
+      email: 'chioma.okafor@gmail.com',
+      phone: '08098765432',
+      whatsappNumber: '08098765432',
+      profileImageUrl:
+          'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
+      rating: 4.6,
+      totalProperties: 8,
+      totalReviews: 32,
+      isVerified: true,
+      bio: 'Dedicated to providing quality and affordable student housing.',
+      languages: ['English', 'Igbo'],
+      preferredContactMethod: 'phone',
+      businessHours: '9:00 AM - 5:00 PM',
+      joinedDate: DateTime(2019, 8, 22),
+    ),
+    LandlordModel(
+      id: 'landlord_3',
+      name: 'Alhaji Musa Ibrahim',
+      email: 'musa.ibrahim@yahoo.com',
+      phone: '08087654321',
+      whatsappNumber: '08087654321',
+      profileImageUrl:
+          'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+      rating: 4.9,
+      totalProperties: 15,
+      totalReviews: 67,
+      isVerified: true,
+      bio:
+          'Premium property developer specializing in luxury student accommodations.',
+      languages: ['English', 'Hausa'],
+      preferredContactMethod: 'whatsapp',
+      businessHours: '7:00 AM - 7:00 PM',
+      joinedDate: DateTime(2018, 1, 10),
+    ),
+  ];
+
   // Sample property images generator
   static List<PropertyImageModel> _generateSampleImages(String propertyId) {
     return [
@@ -108,6 +169,7 @@ class MockData {
         nearestCampusId: 'unilag',
         type: LocationType.property,
       ),
+      landlord: sampleLandlords[0],
     ),
     PropertyModel(
       id: '2',
@@ -135,6 +197,7 @@ class MockData {
         nearestCampusId: 'covenant',
         type: LocationType.property,
       ),
+      landlord: sampleLandlords[1],
     ),
     PropertyModel(
       id: '3',
@@ -162,6 +225,7 @@ class MockData {
         nearestCampusId: 'ui',
         type: LocationType.property,
       ),
+      landlord: sampleLandlords[2],
     ),
   ];
 
@@ -207,6 +271,7 @@ class MockData {
         nearestCampusId: 'fupre',
         type: LocationType.property,
       ),
+      landlord: sampleLandlords[0],
     ),
     PropertyModel(
       id: '2',
@@ -234,6 +299,7 @@ class MockData {
         nearestCampusId: 'fupre',
         type: LocationType.property,
       ),
+      landlord: sampleLandlords[1],
     ),
     PropertyModel(
       id: '3',
@@ -261,6 +327,7 @@ class MockData {
         nearestCampusId: 'fupre',
         type: LocationType.property,
       ),
+      landlord: sampleLandlords[2],
     ),
     PropertyModel(
       id: '4',
@@ -288,6 +355,7 @@ class MockData {
         nearestCampusId: 'fupre',
         type: LocationType.property,
       ),
+      landlord: sampleLandlords[0],
     ),
   ];
 }

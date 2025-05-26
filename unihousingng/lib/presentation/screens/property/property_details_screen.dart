@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants.dart';
+import '../../../core/services/contact_service.dart';
+import '../../../core/services/favorites_service.dart';
 import '../../../data/models/property_model.dart';
 import '../../widgets/property/property_header.dart';
 import '../../widgets/property/property_stats_row.dart';
@@ -22,6 +24,7 @@ class PropertyDetailsScreen extends StatefulWidget {
 
 class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
   bool _isFavorite = false;
+  final FavoritesService _favoritesService = FavoritesService();
 
   Color _getPropertyColor() {
     return widget.property.color;
@@ -30,13 +33,33 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    _isFavorite = widget.property.isFavorite;
+    _loadFavoriteStatus();
   }
 
-  void _toggleFavorite() {
+  Future<void> _loadFavoriteStatus() async {
+    final isFav = await _favoritesService.isFavorite(widget.property.id);
     setState(() {
-      _isFavorite = !_isFavorite;
+      _isFavorite = isFav;
     });
+  }
+
+  Future<void> _toggleFavorite() async {
+    final success = await _favoritesService.toggleFavorite(widget.property.id);
+    if (success && mounted) {
+      setState(() {
+        _isFavorite = !_isFavorite;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _isFavorite ? 'Added to favorites!' : 'Removed from favorites!',
+          ),
+          backgroundColor: AppColors.primary,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   void _shareProperty() {
@@ -49,21 +72,35 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
   }
 
   void _contactLandlord() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Contacting landlord...'),
-        backgroundColor: AppColors.primary,
-      ),
-    );
+    if (widget.property.hasLandlord) {
+      ContactService.showContactOptions(
+        context,
+        phone: widget.property.landlordPhone,
+        whatsapp: widget.property.landlordWhatsApp,
+        email: widget.property.landlordEmail,
+        propertyTitle: widget.property.title,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Contact information not available'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
   }
 
   void _callLandlord() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Calling landlord...'),
-        backgroundColor: AppColors.primary,
-      ),
-    );
+    if (widget.property.landlordPhone.isNotEmpty) {
+      ContactService.makePhoneCall(widget.property.landlordPhone);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Phone number not available'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
   }
 
   @override
@@ -191,6 +228,12 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
             const SizedBox(height: 24),
             PropertyLocationSection(location: widget.property.location),
 
+            // Landlord Information
+            if (widget.property.hasLandlord) ...[
+              const SizedBox(height: 24),
+              _buildLandlordSection(),
+            ],
+
             // Virtual Tour Button
             if (widget.property.hasVirtualTour) ...[
               const SizedBox(height: 24),
@@ -237,6 +280,250 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLandlordSection() {
+    final landlord = widget.property.landlord!;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Landlord Information',
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const Spacer(),
+              if (landlord.isVerified)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.verified, color: Colors.green, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Verified',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          Row(
+            children: [
+              // Profile Image
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child:
+                    landlord.profileImageUrl != null
+                        ? ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Image.network(
+                            landlord.profileImageUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder:
+                                (context, error, stackTrace) => Icon(
+                                  Icons.person,
+                                  color: AppColors.primary,
+                                  size: 30,
+                                ),
+                          ),
+                        )
+                        : Icon(
+                          Icons.person,
+                          color: AppColors.primary,
+                          size: 30,
+                        ),
+              ),
+              const SizedBox(width: 16),
+
+              // Landlord Details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      landlord.name,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    if (landlord.rating != null)
+                      Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            landlord.ratingText,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '(${landlord.reviewsText})',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: 4),
+                    Text(
+                      landlord.propertiesText,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          if (landlord.bio != null) ...[
+            const SizedBox(height: 16),
+            Text(
+              landlord.bio!,
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+                height: 1.4,
+              ),
+            ),
+          ],
+
+          const SizedBox(height: 16),
+
+          // Contact Buttons
+          Row(
+            children: [
+              if (landlord.hasPhone)
+                Expanded(
+                  child: _buildContactButton(
+                    icon: Icons.phone,
+                    label: 'Call',
+                    color: Colors.green,
+                    onTap:
+                        () =>
+                            ContactService.makePhoneCall(landlord.displayPhone),
+                  ),
+                ),
+              if (landlord.hasPhone && landlord.hasWhatsApp)
+                const SizedBox(width: 12),
+              if (landlord.hasWhatsApp)
+                Expanded(
+                  child: _buildContactButton(
+                    icon: Icons.chat,
+                    label: 'WhatsApp',
+                    color: Colors.green[600]!,
+                    onTap:
+                        () => ContactService.sendWhatsAppMessage(
+                          landlord.displayWhatsApp,
+                          message:
+                              'Hello! I\'m interested in your property "${widget.property.title}" on UniHousingNG.',
+                        ),
+                  ),
+                ),
+              if ((landlord.hasPhone || landlord.hasWhatsApp) &&
+                  landlord.hasEmail)
+                const SizedBox(width: 12),
+              if (landlord.hasEmail)
+                Expanded(
+                  child: _buildContactButton(
+                    icon: Icons.email,
+                    label: 'Email',
+                    color: Colors.blue,
+                    onTap:
+                        () => ContactService.sendEmail(
+                          landlord.displayEmail,
+                          subject: 'Inquiry about ${widget.property.title}',
+                        ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContactButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 18),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

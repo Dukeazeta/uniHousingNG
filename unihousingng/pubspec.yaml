@@ -48,6 +48,9 @@ dependencies:
   # Environment variables
   flutter_dotenv: ^5.1.0
 
+  # URL launcher for phone, email, WhatsApp
+  url_launcher: ^6.3.1
+
   # Carousel slider for banner
   carousel_slider: 4.0.0
   # Alternative carousel widget in case of conflicts

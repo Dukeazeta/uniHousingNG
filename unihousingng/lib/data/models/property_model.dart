@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'property_image_model.dart';
 import 'map_location_model.dart';
+import 'landlord_model.dart';
 
 class PropertyModel {
   final String id;
@@ -20,6 +21,7 @@ class PropertyModel {
   final List<PropertyImageModel> images;
   final String? virtualTourUrl;
   final MapLocationModel? mapLocation;
+  final LandlordModel? landlord;
 
   const PropertyModel({
     required this.id,
@@ -39,6 +41,7 @@ class PropertyModel {
     this.images = const [],
     this.virtualTourUrl,
     this.mapLocation,
+    this.landlord,
   });
 
   PropertyModel copyWith({
@@ -59,6 +62,7 @@ class PropertyModel {
     List<PropertyImageModel>? images,
     String? virtualTourUrl,
     MapLocationModel? mapLocation,
+    LandlordModel? landlord,
   }) {
     return PropertyModel(
       id: id ?? this.id,
@@ -78,6 +82,7 @@ class PropertyModel {
       images: images ?? this.images,
       virtualTourUrl: virtualTourUrl ?? this.virtualTourUrl,
       mapLocation: mapLocation ?? this.mapLocation,
+      landlord: landlord ?? this.landlord,
     );
   }
 
@@ -100,6 +105,7 @@ class PropertyModel {
       'images': images.map((img) => img.toMap()).toList(),
       'virtualTourUrl': virtualTourUrl,
       'mapLocation': mapLocation?.toMap(),
+      'landlord': landlord?.toMap(),
     };
   }
 
@@ -123,6 +129,7 @@ class PropertyModel {
       'images': images.map((img) => img.toMap()).toList(),
       'virtualTourUrl': virtualTourUrl,
       'mapLocation': mapLocation?.toMap(),
+      'landlord': landlord?.toMap(),
     };
   }
 
@@ -165,6 +172,10 @@ class PropertyModel {
           map['mapLocation'] != null
               ? MapLocationModel.fromMap(map['mapLocation'])
               : null,
+      landlord:
+          map['landlord'] != null
+              ? LandlordModel.fromMap(map['landlord'])
+              : null,
     );
   }
 
@@ -204,4 +215,13 @@ class PropertyModel {
   bool get hasImages => images.isNotEmpty;
   bool get hasVirtualTour =>
       virtualTourUrl != null && virtualTourUrl!.isNotEmpty;
+  bool get hasLandlord => landlord != null;
+
+  // Landlord helper methods
+  String get landlordName => landlord?.name ?? 'Unknown';
+  String get landlordPhone => landlord?.displayPhone ?? '';
+  String get landlordWhatsApp => landlord?.displayWhatsApp ?? '';
+  String get landlordEmail => landlord?.displayEmail ?? '';
+  bool get canContactLandlord =>
+      hasLandlord && landlord!.availableContactMethods.isNotEmpty;
 }
